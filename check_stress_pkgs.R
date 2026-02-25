@@ -95,7 +95,7 @@ for (pkg in packages) {
         next
     }
 
-    r_files <- list.files(r_dir, pattern = "\\.[Rr]$", full.names = TRUE,
+    r_files <- list.files(r_dir, pattern = "\\.[Rrq]$", full.names = TRUE,
                           recursive = TRUE)
     row$r_files <- length(r_files)
 

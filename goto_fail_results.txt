@@ -1,0 +1,159 @@
+Checking for goto-fail patterns in R Core packages...
+
+Found 31 suspicious bare next-line patterns
+
+--- base :: all.equal.R:31 (if) ---
+         if("function" %in% .class2(target)) 
+           .Deprecated("all.equal(*)", old="all.equal.default(<function>)") 
+   	return(all.equal.function(target, current, ...)) 
+
+--- base :: all.equal.R:357 (if) ---
+       msg <- c(if(mt != mc) 
+   	     paste0("Modes of target, current: ", mt, ", ", mc), 
+   	     if(is.null(ctxt)) 
+
+--- grDevices :: zzz.R:31 (if) ---
+       extras <- if(.Platform$OS.type == "windows") 
+           list(windowsTimeouts = c(100L,500L)) else 
+           list(bitmapType = if(capabilities("aqua")) "quartz" 
+
+--- methods :: addedFunctions.R:56 (if) ---
+   	stop(if(generic) 
+   	     gettextf("no function %s found", sQuote(name)) else 
+   	     gettextf("no non-generic function %s found", sQuote(name)), 
+
+--- methods :: as.R:454 (if) ---
+       sig@package <- if(is.null(thisPackage)) 
+           c(getPackageName(where, FALSE), ClassDef@package) else 
+           c(thisPackage, ClassDef@package) 
+
+--- methods :: RClassUtils.R:952 (if) ---
+                           paste0(how[i], if(is.function(eli@coerce)) 
+                                 ", with explicit test and coerce" else 
+                                 ", with explicit test") 
+
+--- methods :: show.R:22 (if) ---
+       if(!missing(oldMethods)) 
+           .Deprecated(msg = 
+   	"the 'oldMethods' argument is deprecated, as it has been unused since R 1.7.0") 
+
+--- stats :: contrast.R:34 (if) ---
+   	    if(!(useSparse <- any("sparse" == names(formals(ctrfn))))) 
+   		warning(sprintf( 
+   		"contrast function '%s' does not support 'sparse = TRUE'", 
+
+--- stats :: fisher.test.R:157 (if) ---
+   		return(if(upper.tail) 
+   		       phyper(x - 1, m, n, k, lower.tail = FALSE) else 
+   		       phyper(x,     m, n, k)) 
+
+--- stats :: nlm.R:138 (if) ---
+       if(!isTRUE(sign(f.lower) * sign(f.upper) <= 0)) 
+   	stop(if(doX) 
+   	"did not succeed extending the interval endpoints for f(lower) * f(upper) <= 0" 
+
+--- stats :: wilcox.test.R:380 (if) ---
+                       if (SIGMA.CI == 0) 
+   			warning( 
+   			"cannot compute confidence interval when all observations are tied", 
+
+--- tools :: dynamicHelp.R:458 (if) ---
+                   titles[i] <- if(inherits(tmp, "try-error")) 
+                       "unknown title" else 
+                       tmp[file_path_sans_ext(tmp$File) == tp[i], "Title"] 
+
+--- tools :: QC.R:8802 (if) ---
+             paste(if(length(y) > 1L) 
+                   "Uses the superseded packages:" else 
+                   "Uses the superseded package:", 
+
+--- tools :: QC.R:8808 (if) ---
+             paste(if(length(y) > 1L) 
+                   "Uses the non-portable packages:" else 
+                   "Uses the non-portable package:", 
+
+--- tools :: QC.R:8814 (if) ---
+             paste(if(length(y) > 1L) 
+                   "Uses the ACM-licensed packages:" else 
+                   "Uses the ACM-licensed package:", 
+
+--- tools :: toHTML.R:292 (if) ---
+           c(if(is_non_blank_string(header <- x$header)) 
+             c("<p>", htmlify(header), "</p>"), 
+             "<blockquote>", 
+
+--- foreign :: writeForeignSAS.R:135 (for) ---
+       for(v in 1L:ncol(df)) 
+           cat("\n", varnames[v], file = codefile, append = TRUE) 
+           if(strings[v]) cat(" $ ", file = codefile, append = TRUE) 
+
+--- lattice :: interaction.R:766 (for) ---
+           for (column in 1:nvars) 
+               if (row != column) 
+               { 
+
+--- lattice :: print.trellis.R:818 (for) ---
+               for (row in seq_len(rows.per.page)) 
+                   for (column in seq_len(cols.per.page)) 
+                   { 
+
+--- lattice :: print.trellis.R:866 (for) ---
+               for (row in seq_len(rows.per.page)) 
+                   for (column in seq_len(cols.per.page)) 
+                   { 
+
+--- lattice :: splom.R:184 (for) ---
+           for(i in 1:n.var)     ## i = row, j = col 
+               for(j in 1:n.var) 
+               { 
+
+--- Matrix :: Auxiliaries.R:77 (if) ---
+                            if(is.na(diag)) 
+                                diag <- 
+                                if(!is.na(a <- all(y        )) && a) "U" else "N" 
+
+--- Matrix :: Auxiliaries.R:84 (if) ---
+                            if(is.na(diag)) 
+                                diag <- 
+                                if(!is.na(a <- all(y == 1L  )) && a) "U" else "N" 
+
+--- Matrix :: Auxiliaries.R:99 (if) ---
+                            if(is.na(diag)) 
+                                diag <- 
+                                if(!is.na(a <- all(y == 1   )) && a) "U" else "N" 
+
+--- Matrix :: Ops.R:841 (for) ---
+   for(Mcl in c("lMatrix","nMatrix","dMatrix")) 
+       for(cl in c("logical", "numeric", "sparseVector")) 
+       setMethod("Logic", c(e1 = cl, e2 = Mcl), 
+
+--- mgcv :: gam.fit4.r:354 (if) ---
+                 if (length(start) != nvars)  
+                     stop("Length of start should equal ", nvars,  
+                     " and correspond to initial coefs for ", deparse(xnames)) 
+
+--- mgcv :: plots.r:273 (if) ---
+     linpred <- if (is.matrix(b$linear.predictors)&&!is.matrix(resid))  
+                napredict(b$na.action, b$linear.predictors[,1]) else  
+                napredict(b$na.action, b$linear.predictors) 
+
+--- mgcv :: scasm.r:467 (if) ---
+            if (ii > control$maxit)  
+              stop("inner loop 2; cannot correct step size", call. = FALSE) 
+              ii <- ii + 1 
+
+--- mgcv :: scasm.r:1281 (if) ---
+       object$bs <- if (inherits(G$family,"extended.family")) 
+                  scasm.newton(G,log(G$sp),start=start,control=control,scale.known=scale.known,bs=bs)$bs else 
+                  scasm.pirls(G,log(G$sp),start=start,control=control,eps=eps,bs=bs)$bs 
+
+--- nlme :: lme.R:2517 (if) ---
+     if (adjustSigma && object$method == "ML") 
+       stdFixed <- stdFixed * 
+       sqrt(object$dims$N/(object$dims$N - length(stdFixed))) 
+
+--- nlme :: lme.R:2758 (if) ---
+     if(ZXstart[1L] <= ZXend[1L]) 
+       fit[, "fixed"] <-			# population fitted values 
+       conLin$Xy[, ZXstart[1L]:ZXend[1L], drop = FALSE] %*% lmeFit$beta 
+

@@ -61,7 +61,7 @@ if (!dir.exists(r_dir)) {
     quit(save = "no", status = 0)
 }
 
-r_files <- list.files(r_dir, pattern = "\\.[Rr]$", full.names = TRUE,
+r_files <- list.files(r_dir, pattern = "\\.[Rrq]$", full.names = TRUE,
                       recursive = TRUE)
 if (length(r_files) == 0) {
     cat(paste(pkg, "SKIP", "", 0, 0, 0, 0, sep = "\t"), "\n", sep = "")

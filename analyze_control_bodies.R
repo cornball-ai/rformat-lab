@@ -29,7 +29,7 @@ find_r_files <- function (pkg) {
     # Check base_r_src first
     r_dir <- file.path(base_r_src, pkg, "R")
     if (dir.exists(r_dir)) {
-        return(list.files(r_dir, pattern = "\\.[Rr]$", full.names = TRUE,
+        return(list.files(r_dir, pattern = "\\.[Rrq]$", full.names = TRUE,
                           recursive = TRUE))
     }
     # Check for CRAN tarball
@@ -42,7 +42,7 @@ find_r_files <- function (pkg) {
     untar(tarballs[1], exdir = work_dir)
     r_dir <- file.path(work_dir, pkg, "R")
     if (!dir.exists(r_dir)) return(character(0))
-    list.files(r_dir, pattern = "\\.[Rr]$", full.names = TRUE,
+    list.files(r_dir, pattern = "\\.[Rrq]$", full.names = TRUE,
                recursive = TRUE)
 }
 

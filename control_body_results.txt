@@ -13,9 +13,9 @@ Analyzing R Core packages...
    tcltk : 9 files, 81 control bodies
    tools : 57 files, 6231 control bodies
    utils : 94 files, 3132 control bodies
-   boot : not found
+   boot : 2 files, 578 control bodies
    class : 5 files, 57 control bodies
-   cluster : 9 files, 120 control bodies
+   cluster : 18 files, 478 control bodies
    codetools : 1 files, 174 control bodies
    foreign : 14 files, 269 control bodies
    KernSmooth : 1 files, 70 control bodies
@@ -30,37 +30,37 @@ Analyzing R Core packages...
    survival : 159 files, 4379 control bodies
 
 === All Bodies ===
-  braced_multi_stmt    14968  (34.6%)
-  bare_same_line       13185  (30.5%)
-  bare_next_line       12265  (28.3%)
-  braced_single_stmt    2608  ( 6.0%)
-  braced_single_line     240  ( 0.6%)
-  TOTAL                43266
+  braced_multi_stmt    15308  (34.6%)
+  bare_same_line       13439  (30.4%)
+  bare_next_line       12580  (28.5%)
+  braced_single_stmt    2629  ( 5.9%)
+  braced_single_line     246  ( 0.6%)
+  TOTAL                44202
 
 === Single-Statement vs Multi-Statement ===
-  Single-statement:  28298  (style choice)
-  Multi-statement:   14968  (braces required)
+  Single-statement:  28894  (style choice)
+  Multi-statement:   15308  (braces required)
 
 === Single-Statement Body Styles (the interesting comparison) ===
-  bare_same_line       13185  (46.6%)
-  bare_next_line       12265  (43.3%)
-  braced_single_stmt    2608  ( 9.2%)
-  braced_single_line     240  ( 0.8%)
-  TOTAL                28298
+  bare_same_line       13439  (46.5%)
+  bare_next_line       12580  (43.5%)
+  braced_single_stmt    2629  ( 9.1%)
+  braced_single_line     246  ( 0.9%)
+  TOTAL                28894
 
 === Single-Statement by Keyword ===
 if :
-  bare_same_line       12739  (47.0%)
-  bare_next_line       11739  (43.3%)
-  braced_single_stmt    2423  ( 8.9%)
-  braced_single_line     230  ( 0.8%)
+  bare_same_line       12987  (46.9%)
+  bare_next_line       12040  (43.5%)
+  braced_single_stmt    2442  ( 8.8%)
+  braced_single_line     236  ( 0.9%)
 for :
-  bare_next_line         505  (45.3%)
-  bare_same_line         424  (38.1%)
-  braced_single_stmt     182  (16.3%)
+  bare_next_line         518  (45.6%)
+  bare_same_line         430  (37.9%)
+  braced_single_stmt     184  (16.2%)
   braced_single_line       3  ( 0.3%)
 while :
-  bare_same_line          22  (41.5%)
-  bare_next_line          21  (39.6%)
-  braced_single_line       7  (13.2%)
-  braced_single_stmt       3  ( 5.7%)
+  bare_next_line          22  (40.7%)
+  bare_same_line          22  (40.7%)
+  braced_single_line       7  (13.0%)
+  braced_single_stmt       3  ( 5.6%)

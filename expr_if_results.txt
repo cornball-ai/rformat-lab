@@ -1,0 +1,71 @@
+Analyzing expression if-else in R Core packages...
+   base : 163 files, 2724 statement if, 434 expression if
+   compiler : 1 files, 310 statement if, 101 expression if
+   datasets : not found
+   graphics : 51 files, 961 statement if, 151 expression if
+   grDevices : 33 files, 694 statement if, 104 expression if
+   grid : 31 files, 1171 statement if, 26 expression if
+   methods : 33 files, 1823 statement if, 279 expression if
+   parallel : 15 files, 217 statement if, 31 expression if
+   splines : 3 files, 101 statement if, 15 expression if
+   stats : 152 files, 3401 statement if, 753 expression if
+   stats4 : 2 files, 16 statement if, 32 expression if
+   tcltk : 9 files, 64 statement if, 12 expression if
+   tools : 57 files, 4790 statement if, 1058 expression if
+   utils : 94 files, 2503 statement if, 410 expression if
+   boot : 2 files, 486 statement if, 21 expression if
+   class : 5 files, 52 statement if, 0 expression if
+   cluster : 18 files, 365 statement if, 86 expression if
+   codetools : 1 files, 102 statement if, 37 expression if
+   foreign : 14 files, 212 statement if, 11 expression if
+   KernSmooth : 1 files, 56 statement if, 11 expression if
+   lattice : 34 files, 1355 statement if, 355 expression if
+   MASS : 42 files, 673 statement if, 67 expression if
+   Matrix : 49 files, 1151 statement if, 1537 expression if
+   mgcv : 22 files, 4839 statement if, 687 expression if
+   nlme : 19 files, 1719 statement if, 256 expression if
+   nnet : 4 files, 121 statement if, 7 expression if
+   rpart : 36 files, 254 statement if, 57 expression if
+   spatial : 3 files, 65 statement if, 2 expression if
+   survival : 159 files, 4022 statement if, 88 expression if
+
+=== Overview ===
+  Statement if:    34247  (control flow)
+  Expression if:    6628  (value-producing)
+  TOTAL:           40875
+
+=== Statement if: has else? ===
+  Without else:    25747  (75.2%)
+  With else:        8500  (24.8%)
+
+=== Expression if: has else? ===
+  With else:        4575  (69.0%)
+  Without else:     2053  (31.0%)
+
+=== Expression if-else: All Styles ===
+  expanded_long         2524  (55.2%)
+  inline                1921  (42.0%)
+  expanded_short         130  ( 2.8%)
+  TOTAL                 4575
+
+=== Expression if-else: Where Inline is an Option (the interesting comparison) ===
+  inline (kept)              1921  (93.7%)
+  expanded (by choice)        130  ( 6.3%)
+  TOTAL                      2051
+
+=== Expression if (no else) Style ===
+  expanded_long         1538  (74.9%)
+  inline                 515  (25.1%)
+  TOTAL                 2053
+
+=== Expression if-else by Package (top 10) ===
+  Matrix           934  (inline: 380, expanded-short: 40, expanded-long: 514)
+  mgcv             626  (inline: 382, expanded-short: 5, expanded-long: 239)
+  tools            553  (inline: 141, expanded-short: 18, expanded-long: 394)
+  stats            552  (inline: 266, expanded-short: 10, expanded-long: 276)
+  lattice          347  (inline: 126, expanded-short: 29, expanded-long: 192)
+  base             311  (inline: 141, expanded-short: 2, expanded-long: 168)
+  utils            273  (inline: 78, expanded-short: 7, expanded-long: 188)
+  methods          186  (inline: 68, expanded-short: 4, expanded-long: 114)
+  nlme             147  (inline: 51, expanded-short: 4, expanded-long: 92)
+  graphics         132  (inline: 82, expanded-short: 0, expanded-long: 50)
