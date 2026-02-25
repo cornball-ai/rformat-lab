@@ -1,0 +1,66 @@
+Analyzing R Core packages...
+   base : 163 files, 3320 control bodies
+   compiler : 1 files, 453 control bodies
+   datasets : not found
+   graphics : 51 files, 1170 control bodies
+   grDevices : 33 files, 811 control bodies
+   grid : 31 files, 1255 control bodies
+   methods : 33 files, 2349 control bodies
+   parallel : 15 files, 287 control bodies
+   splines : 3 files, 122 control bodies
+   stats : 152 files, 4387 control bodies
+   stats4 : 2 files, 60 control bodies
+   tcltk : 9 files, 81 control bodies
+   tools : 57 files, 6231 control bodies
+   utils : 94 files, 3132 control bodies
+   boot : not found
+   class : 5 files, 57 control bodies
+   cluster : 9 files, 120 control bodies
+   codetools : 1 files, 174 control bodies
+   foreign : 14 files, 269 control bodies
+   KernSmooth : 1 files, 70 control bodies
+   lattice : 34 files, 1801 control bodies
+   MASS : 42 files, 792 control bodies
+   Matrix : 49 files, 2803 control bodies
+   mgcv : 22 files, 6457 control bodies
+   nlme : 19 files, 2146 control bodies
+   nnet : 4 files, 134 control bodies
+   rpart : 36 files, 331 control bodies
+   spatial : 3 files, 75 control bodies
+   survival : 159 files, 4379 control bodies
+
+=== All Bodies ===
+  braced_multi_stmt    14968  (34.6%)
+  bare_same_line       13185  (30.5%)
+  bare_next_line       12265  (28.3%)
+  braced_single_stmt    2608  ( 6.0%)
+  braced_single_line     240  ( 0.6%)
+  TOTAL                43266
+
+=== Single-Statement vs Multi-Statement ===
+  Single-statement:  28298  (style choice)
+  Multi-statement:   14968  (braces required)
+
+=== Single-Statement Body Styles (the interesting comparison) ===
+  bare_same_line       13185  (46.6%)
+  bare_next_line       12265  (43.3%)
+  braced_single_stmt    2608  ( 9.2%)
+  braced_single_line     240  ( 0.8%)
+  TOTAL                28298
+
+=== Single-Statement by Keyword ===
+if :
+  bare_same_line       12739  (47.0%)
+  bare_next_line       11739  (43.3%)
+  braced_single_stmt    2423  ( 8.9%)
+  braced_single_line     230  ( 0.8%)
+for :
+  bare_next_line         505  (45.3%)
+  bare_same_line         424  (38.1%)
+  braced_single_stmt     182  (16.3%)
+  braced_single_line       3  ( 0.3%)
+while :
+  bare_same_line          22  (41.5%)
+  bare_next_line          21  (39.6%)
+  braced_single_line       7  (13.2%)
+  braced_single_stmt       3  ( 5.7%)
