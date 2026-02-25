@@ -73,7 +73,7 @@ if (length(r_files) == 0) {
 sample_opts <- function () {
     list(
         control_braces = sample(list(FALSE, TRUE, "single", "multi",
-                                     "next_line"), 1)[[1]],
+                                     "next_line", "same_line"), 1)[[1]],
         expand_if      = sample(c(FALSE, TRUE), 1),
         brace_style    = sample(c("kr", "allman"), 1),
         function_space = sample(c(FALSE, TRUE), 1),
