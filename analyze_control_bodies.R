@@ -107,24 +107,38 @@ classify_bodies <- function (path) {
         close_line <- terminals$line1[close_idx]
 
         if (body_tok$token == "'{'") {
-            # Braced body — check if single-line or multi-line
-            # Find matching }
+            # Braced body — find matching } and count statements
             brace_depth <- 1L
             end_idx <- body_idx + 1L
+            # Count top-level statements: each new line at depth 1
+            # that starts a token is a statement
+            stmt_lines <- integer(0)
             while (end_idx <= nrow(terminals) && brace_depth > 0L) {
                 if (terminals$token[end_idx] == "'{'") {
                     brace_depth <- brace_depth + 1L
                 } else if (terminals$token[end_idx] == "'}'") {
                     brace_depth <- brace_depth - 1L
                 }
+                if (brace_depth == 1L &&
+                    !terminals$token[end_idx] %in% c("'}'", "COMMENT")) {
+                    ln <- terminals$line1[end_idx]
+                    if (!ln %in% stmt_lines) {
+                        stmt_lines <- c(stmt_lines, ln)
+                    }
+                }
                 if (brace_depth > 0L) end_idx <- end_idx + 1L
             }
             if (end_idx > nrow(terminals)) next
 
-            if (terminals$line1[end_idx] == body_tok$line1) {
-                style <- "braced_single"
+            n_stmts <- length(stmt_lines)
+            is_single_line <- terminals$line1[end_idx] == body_tok$line1
+
+            if (n_stmts > 1L) {
+                style <- "braced_multi_stmt"
+            } else if (is_single_line) {
+                style <- "braced_single_line"
             } else {
-                style <- "braced_multi"
+                style <- "braced_single_stmt"
             }
         } else {
             # Bare body
@@ -170,29 +184,39 @@ for (pkg in unique(c(core_pkgs, rec_pkgs))) {
         "control bodies\n")
 }
 
-cat("\n=== Overall ===\n")
+cat("\n=== All Bodies ===\n")
 tab <- table(all_results$style)
 pct <- round(prop.table(tab) * 100, 1)
 for (s in names(sort(tab, decreasing = TRUE))) {
-    cat(sprintf("  %-16s %5d  (%4.1f%%)\n", s, tab[s], pct[s]))
+    cat(sprintf("  %-20s %5d  (%4.1f%%)\n", s, tab[s], pct[s]))
 }
-cat(sprintf("  %-16s %5d\n", "TOTAL", sum(tab)))
+cat(sprintf("  %-20s %5d\n", "TOTAL", sum(tab)))
 
-cat("\n=== Bare vs Braced ===\n")
-bare <- sum(tab[grep("^bare", names(tab))])
-braced <- sum(tab[grep("^braced", names(tab))])
-total <- bare + braced
-cat(sprintf("  Bare:   %5d  (%4.1f%%)\n", bare, bare / total * 100))
-cat(sprintf("  Braced: %5d  (%4.1f%%)\n", braced, braced / total * 100))
+# Single-statement bodies: the style choice that matters
+# Multi-statement bodies MUST have braces — not a style decision
+single_stmt <- all_results[all_results$style != "braced_multi_stmt", ]
+multi_stmt <- all_results[all_results$style == "braced_multi_stmt", ]
 
-cat("\n=== By Keyword ===\n")
+cat(sprintf("\n=== Single-Statement vs Multi-Statement ===\n"))
+cat(sprintf("  Single-statement:  %5d  (style choice)\n", nrow(single_stmt)))
+cat(sprintf("  Multi-statement:   %5d  (braces required)\n", nrow(multi_stmt)))
+
+cat("\n=== Single-Statement Body Styles (the interesting comparison) ===\n")
+stab <- table(single_stmt$style)
+spct <- round(prop.table(stab) * 100, 1)
+for (s in names(sort(stab, decreasing = TRUE))) {
+    cat(sprintf("  %-20s %5d  (%4.1f%%)\n", s, stab[s], spct[s]))
+}
+cat(sprintf("  %-20s %5d\n", "TOTAL", sum(stab)))
+
+cat("\n=== Single-Statement by Keyword ===\n")
 for (kw in c("if", "for", "while")) {
-    sub <- all_results[all_results$keyword == kw, ]
+    sub <- single_stmt[single_stmt$keyword == kw, ]
     if (nrow(sub) == 0) next
     cat(kw, ":\n")
     kt <- table(sub$style)
     kp <- round(prop.table(kt) * 100, 1)
     for (s in names(sort(kt, decreasing = TRUE))) {
-        cat(sprintf("  %-16s %5d  (%4.1f%%)\n", s, kt[s], kp[s]))
+        cat(sprintf("  %-20s %5d  (%4.1f%%)\n", s, kt[s], kp[s]))
     }
 }
