@@ -11,7 +11,7 @@
 #   cat packages.txt | parallel -j8 --timeout 30 r lab/stress_test.R {}  # parallel
 #
 # Output columns (tab-separated):
-#   package  file  status  lines  bytes  fmt_ms  idemp_ms
+#   package  file  status  lines  bytes  fmt_ms  idemp_ms  opts
 
 library(rformat)
 
@@ -69,8 +69,36 @@ if (length(r_files) == 0) {
     quit(save = "no", status = 0)
 }
 
+# Random parameter sampling: each file gets a random combination
+sample_opts <- function () {
+    list(
+        control_braces = sample(list(FALSE, TRUE, "single", "multi",
+                                     "next_line"), 1)[[1]],
+        expand_if      = sample(c(FALSE, TRUE), 1),
+        brace_style    = sample(c("kr", "allman"), 1),
+        function_space = sample(c(FALSE, TRUE), 1),
+        else_same_line = sample(c(TRUE, FALSE), 1),
+        wrap           = sample(c("paren", "fixed"), 1)
+    )
+}
+
+# Short label for option set (for debugging failures)
+opts_label <- function (opts) {
+    cb <- if (is.logical(opts$control_braces)) {
+        if (opts$control_braces) "T" else "F"
+    } else {
+        opts$control_braces
+    }
+    paste0("cb=", cb,
+           ",ei=", if (opts$expand_if) "T" else "F",
+           ",bs=", opts$brace_style,
+           ",fs=", if (opts$function_space) "T" else "F",
+           ",es=", if (opts$else_same_line) "T" else "F",
+           ",w=", opts$wrap)
+}
+
 # Format each file: output one TSV line per file
-# Columns: package  file  status  lines  bytes  fmt_ms  idemp_ms
+# Columns: package  file  status  lines  bytes  fmt_ms  idemp_ms  opts
 for (f in r_files) {
     bn <- basename(f)
     original <- paste(readLines(f, warn = FALSE), collapse = "\n")
@@ -80,23 +108,34 @@ for (f in r_files) {
     # Check original parses
     if (is.null(tryCatch(parse(text = original, keep.source = TRUE),
                          error = function(e) NULL))) {
-        cat(paste(pkg, bn, "NOPARSE", n_lines, n_bytes, 0, 0, sep = "\t"),
-            "\n", sep = "")
+        cat(paste(pkg, bn, "NOPARSE", n_lines, n_bytes, 0, 0, "",
+                  sep = "\t"), "\n", sep = "")
         next
     }
+
+    # Sample random options for this file
+    opts <- sample_opts()
+    olbl <- opts_label(opts)
 
     # Format pass 1
     t0 <- proc.time()[["elapsed"]]
     formatted <- tryCatch(
-        withCallingHandlers(rformat(original),
+        withCallingHandlers(
+            rformat(original,
+                    control_braces = opts$control_braces,
+                    expand_if = opts$expand_if,
+                    brace_style = opts$brace_style,
+                    function_space = opts$function_space,
+                    else_same_line = opts$else_same_line,
+                    wrap = opts$wrap),
             warning = function(w) invokeRestart("muffleWarning")),
         error = function(e) NULL
     )
     fmt_ms <- round((proc.time()[["elapsed"]] - t0) * 1000)
 
     if (is.null(formatted)) {
-        cat(paste(pkg, bn, "ERROR", n_lines, n_bytes, fmt_ms, 0, sep = "\t"),
-            "\n", sep = "")
+        cat(paste(pkg, bn, "ERROR", n_lines, n_bytes, fmt_ms, 0, olbl,
+                  sep = "\t"), "\n", sep = "")
         next
     }
 
@@ -105,30 +144,37 @@ for (f in r_files) {
                        error = function(e) e)
 
     if (inherits(parsed, "error")) {
-        cat(paste(pkg, bn, "FAIL", n_lines, n_bytes, fmt_ms, 0, sep = "\t"),
-            "\n", sep = "")
+        cat(paste(pkg, bn, "FAIL", n_lines, n_bytes, fmt_ms, 0, olbl,
+                  sep = "\t"), "\n", sep = "")
         next
     }
 
-    # Idempotence check (format pass 2)
+    # Idempotence check (format pass 2 with same options)
     t1 <- proc.time()[["elapsed"]]
     formatted2 <- tryCatch(
-        withCallingHandlers(rformat(formatted),
+        withCallingHandlers(
+            rformat(formatted,
+                    control_braces = opts$control_braces,
+                    expand_if = opts$expand_if,
+                    brace_style = opts$brace_style,
+                    function_space = opts$function_space,
+                    else_same_line = opts$else_same_line,
+                    wrap = opts$wrap),
             warning = function(w) invokeRestart("muffleWarning")),
         error = function(e) NULL)
     idemp_ms <- round((proc.time()[["elapsed"]] - t1) * 1000)
 
     if (!is.null(formatted2) && formatted2 != formatted) {
         cat(paste(pkg, bn, "IDEMP", n_lines, n_bytes, fmt_ms, idemp_ms,
-                  sep = "\t"), "\n", sep = "")
+                  olbl, sep = "\t"), "\n", sep = "")
     } else {
         cat(paste(pkg, bn, "OK", n_lines, n_bytes, fmt_ms, idemp_ms,
-                  sep = "\t"), "\n", sep = "")
+                  olbl, sep = "\t"), "\n", sep = "")
     }
 }
 
 # Sentinel: signals package completed (not killed by --timeout)
-cat(paste(pkg, "_DONE_", "DONE", length(r_files), 0, 0, 0, sep = "\t"),
-    "\n", sep = "")
+cat(paste(pkg, "_DONE_", "DONE", length(r_files), 0, 0, 0, "",
+          sep = "\t"), "\n", sep = "")
 
 unlink(work_dir, recursive = TRUE)
