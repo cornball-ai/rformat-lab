@@ -25,36 +25,46 @@ if (!nzchar(pkg)) {
     stop("Usage: r lab/stress_test.R <package>")
 }
 
-# Download source tarball (cached)
+# Check base R source first (for base + recommended packages)
 cache_dir <- path.expand("~/.cache/rformat_cran_src")
-dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+base_r_src <- file.path(cache_dir, "base_r_src")
+base_pkg_dir <- file.path(base_r_src, pkg)
 
-cached <- list.files(cache_dir, pattern = paste0("^", pkg, "_.*\\.tar\\.gz$"),
-                     full.names = TRUE)
-if (length(cached) > 0) {
-    tarball <- cached[1]
-} else {
-    dl <- tryCatch(
-        download.packages(pkg, destdir = cache_dir, type = "source",
-                          repos = "https://cloud.r-project.org",
-                          quiet = TRUE),
-        error = function(e) NULL
-    )
-    if (is.null(dl) || nrow(dl) == 0) {
-        cat(paste(pkg, "SKIP", "", 0, 0, 0, 0, sep = "\t"), "\n", sep = "")
-        quit(save = "no", status = 0)
-    }
-    tarball <- dl[1, 2]
-}
-
-# Extract to temp (per-package dir avoids race conditions under parallel)
 work_dir <- file.path(tempdir(), paste0("rformat_stress_", pkg, "_", Sys.getpid()))
-dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
-pkg_dir <- file.path(work_dir, pkg)
-if (dir.exists(pkg_dir)) unlink(pkg_dir, recursive = TRUE)
-untar(tarball, exdir = work_dir)
 
-r_dir <- file.path(pkg_dir, "R")
+if (dir.exists(file.path(base_pkg_dir, "R"))) {
+    # Use pre-extracted base R source directly (no temp copy needed)
+    r_dir <- file.path(base_pkg_dir, "R")
+} else {
+    # Download source tarball from CRAN (cached)
+    dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+
+    cached <- list.files(cache_dir, pattern = paste0("^", pkg, "_.*\\.tar\\.gz$"),
+                         full.names = TRUE)
+    if (length(cached) > 0) {
+        tarball <- cached[1]
+    } else {
+        dl <- tryCatch(
+            download.packages(pkg, destdir = cache_dir, type = "source",
+                              repos = "https://cloud.r-project.org",
+                              quiet = TRUE),
+            error = function(e) NULL
+        )
+        if (is.null(dl) || nrow(dl) == 0) {
+            cat(paste(pkg, "SKIP", "", 0, 0, 0, 0, sep = "\t"), "\n", sep = "")
+            quit(save = "no", status = 0)
+        }
+        tarball <- dl[1, 2]
+    }
+
+    # Extract to temp (per-package dir avoids race conditions under parallel)
+    dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
+    pkg_dir <- file.path(work_dir, pkg)
+    if (dir.exists(pkg_dir)) unlink(pkg_dir, recursive = TRUE)
+    untar(tarball, exdir = work_dir)
+
+    r_dir <- file.path(pkg_dir, "R")
+}
 if (!dir.exists(r_dir)) {
     cat(paste(pkg, "SKIP", "", 0, 0, 0, 0, sep = "\t"), "\n", sep = "")
     unlink(pkg_dir, recursive = TRUE)
@@ -177,4 +187,4 @@ for (f in r_files) {
 cat(paste(pkg, "_DONE_", "DONE", length(r_files), 0, 0, 0, "",
           sep = "\t"), "\n", sep = "")
 
-unlink(work_dir, recursive = TRUE)
+if (dir.exists(work_dir)) unlink(work_dir, recursive = TRUE)
