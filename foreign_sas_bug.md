@@ -99,5 +99,3 @@ for(v in 1L:ncol(df)) {
 }
 ```
 
-The bug was found by static analysis of bare control flow bodies across all
-30 packages that ship with R.
