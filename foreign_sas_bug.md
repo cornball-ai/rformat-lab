@@ -79,8 +79,34 @@ foreign: 0.8-91 (CRAN)
 
 ## Notes
 
-The cause is a missing brace in `writeForeignSAS()`. In the current source
-(`writeForeignSAS.R`, lines 135-137):
+The bug was introduced in foreign 0.8-30 (2008-12-23) when the code was
+reformatted. The braces were removed and the `if` was moved to the same
+line, but it ended up outside the `for` loop body.
+
+SVN r5283 shows the change:
+
+```diff
+-  for(v in 1L:ncol(df)){
+-    cat("\n",varnames[v],file=codefile,append=TRUE)
+-    if(strings[v])
+-      cat(" $ ",file=codefile,append=TRUE)
+-  }
++    for(v in 1L:ncol(df))
++        cat("\n", varnames[v], file = codefile, append = TRUE)
++        if(strings[v]) cat(" $ ", file = codefile, append = TRUE)
+```
+
+foreign 0.8-29 (2008-08-08) had the correct braced version:
+
+```r
+for(v in 1L:ncol(df)){
+    cat("\n",varnames[v],file=codefile,append=TRUE)
+    if(strings[v])
+        cat(" $ ",file=codefile,append=TRUE)
+}
+```
+
+In the current source (`writeForeignSAS.R`, lines 135-137):
 
 ```r
 for(v in 1L:ncol(df))
