@@ -123,7 +123,9 @@ for (f in r_files) {
         next
     }
 
-    # Sample random options for this file
+    # Deterministic random options per package+file (seeded hash)
+    seed <- sum(utf8ToInt(paste0(pkg, "/", bn))) %% .Machine$integer.max
+    set.seed(seed)
     opts <- sample_opts()
     olbl <- opts_label(opts)
 
