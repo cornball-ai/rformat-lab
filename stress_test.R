@@ -88,7 +88,9 @@ sample_opts <- function () {
         brace_style    = sample(c("kr", "allman"), 1),
         function_space = sample(c(FALSE, TRUE), 1),
         else_same_line = sample(c(TRUE, FALSE), 1),
-        wrap           = sample(c("paren", "fixed"), 1)
+        wrap           = sample(c("paren", "fixed"), 1),
+        indent         = sample(c(2L, 4L, 8L), 1),
+        line_limit     = sample(c(80L, 100L, 120L), 1)
     )
 }
 
@@ -104,7 +106,9 @@ opts_label <- function (opts) {
            ",bs=", opts$brace_style,
            ",fs=", if (opts$function_space) "T" else "F",
            ",es=", if (opts$else_same_line) "T" else "F",
-           ",w=", opts$wrap)
+           ",w=", opts$wrap,
+           ",in=", opts$indent,
+           ",lw=", opts$line_limit)
 }
 
 # Format each file: output one TSV line per file
@@ -139,7 +143,9 @@ for (f in r_files) {
                     brace_style = opts$brace_style,
                     function_space = opts$function_space,
                     else_same_line = opts$else_same_line,
-                    wrap = opts$wrap),
+                    wrap = opts$wrap,
+                    indent = opts$indent,
+                    line_limit = opts$line_limit),
             warning = function(w) invokeRestart("muffleWarning")),
         error = function(e) NULL
     )
@@ -171,7 +177,9 @@ for (f in r_files) {
                     brace_style = opts$brace_style,
                     function_space = opts$function_space,
                     else_same_line = opts$else_same_line,
-                    wrap = opts$wrap),
+                    wrap = opts$wrap,
+                    indent = opts$indent,
+                    line_limit = opts$line_limit),
             warning = function(w) invokeRestart("muffleWarning")),
         error = function(e) NULL)
     idemp_ms <- round((proc.time()[["elapsed"]] - t1) * 1000)
